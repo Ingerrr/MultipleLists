@@ -26,7 +26,7 @@ import static android.view.View.VISIBLE;
 public class SingleListActivity extends AppCompatActivity {
 
     // Create variables
-    ArrayList<String> toDoes;
+    ArrayList<String> toDos;
     ListView listToDo;
     ArrayAdapter<String> listAdapter;
     String textFileName;
@@ -63,16 +63,16 @@ public class SingleListActivity extends AppCompatActivity {
         // Create link to ListView on screen
         listToDo = (ListView) findViewById(R.id.list);
 
-        // Create empty toDoes
-        toDoes = new ArrayList<String>();
+        // Create empty toDos
+        toDos = new ArrayList<>();
 
         // Attempts to input list from file if it exists
         try {
-            // Read existing toDoes from file
+            // Read existing toDos from file
             Scanner scan = new Scanner(openFileInput(textFileName));
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
-                toDoes.add(line);
+                toDos.add(line);
             }
             // Set title of the list
             ((TextView) findViewById(R.id.title)).setText(titleList);
@@ -91,7 +91,7 @@ public class SingleListActivity extends AppCompatActivity {
         }
 
         // Set Adapter to ListView
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toDoes);
+        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, toDos);
         listToDo.setAdapter(listAdapter);
         listAdapter.notifyDataSetChanged();
 
@@ -100,7 +100,7 @@ public class SingleListActivity extends AppCompatActivity {
     }
 
     /*
-    * Adds item to toDoes after user input
+    * Adds item to toDos after user input
      */
     public void addItem(View view) throws FileNotFoundException {
 
@@ -108,7 +108,6 @@ public class SingleListActivity extends AppCompatActivity {
         if (titleList.matches("")){
             // Ask user to give a title first
             Toast.makeText(this, R.string.titleFirst, Toast.LENGTH_LONG).show();
-            return;
         }
         else {
             // Read input from user
@@ -116,8 +115,8 @@ public class SingleListActivity extends AppCompatActivity {
             if(input.matches("")){
                 return;
             }
-            // Add input to toDoes
-            toDoes.add(input);
+            // Add input to toDos
+            toDos.add(input);
 
             // Update ListView
             listAdapter.notifyDataSetChanged();
@@ -126,7 +125,7 @@ public class SingleListActivity extends AppCompatActivity {
             ((EditText) findViewById(R.id.input)).setText("");
 
             // Store/update list in text file
-            writeToFile(toDoes, textFileName);
+            writeToFile(toDos, textFileName);
         }
     }
 
@@ -144,14 +143,14 @@ public class SingleListActivity extends AppCompatActivity {
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                         // Removes item from list
-                        toDoes.remove(position);
+                        toDos.remove(position);
 
                         // Update ListView
                         listAdapter.notifyDataSetChanged();
 
                         // Update text file
                         try {
-                            writeToFile(toDoes, textFileName);
+                            writeToFile(toDos, textFileName);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -165,14 +164,14 @@ public class SingleListActivity extends AppCompatActivity {
     /*
     * Writes list to text file so that ListView doesn't reset after reboot
      */
-    public void writeToFile(ArrayList<String> toDoes, String textFileName) throws FileNotFoundException {
+    public void writeToFile(ArrayList<String> toDos, String textFileName) throws FileNotFoundException {
 
         // Create link to file
         PrintStream out = new PrintStream(openFileOutput(textFileName, MODE_PRIVATE));
 
-        // Write toDoes to file one by one
-        for (int i = 0; i < toDoes.size(); i++) {
-            out.println(toDoes.get(i));
+        // Write toDos to file one by one
+        for (int i = 0; i < toDos.size(); i++) {
+            out.println(toDos.get(i));
         }
 
         // Close file
@@ -212,7 +211,7 @@ public class SingleListActivity extends AppCompatActivity {
         textFileName = titleList.replace(" ", "") + ".txt";
 
         // Create text file for this list
-        writeToFile(toDoes, textFileName);
+        writeToFile(toDos, textFileName);
     }
 
     /*
